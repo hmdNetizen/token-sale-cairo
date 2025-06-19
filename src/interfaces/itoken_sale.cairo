@@ -6,4 +6,5 @@ pub trait ITokenSale<TContractState> {
     fn deposit_token(ref self: TContractState, token_address: ContractAddress, amount: u256, token_price: u256);
     fn buy_token(ref self: TContractState, token_address: ContractAddress, amount: u256);
     fn upgrade(ref self: TContractState, new_class_hash: ClassHash);
+    fn get_accepted_payment_token(self: @TContractState) -> ContractAddress;
 }

@@ -14,8 +14,11 @@ use starknet::{ContractAddress, ClassHash, get_contract_address, get_caller_addr
     impl UpgradeableInternalImpl = UpgradeableComponent::InternalImpl<ContractState>;
     impl OwnableComponentImpl = OwnableComponent::InternalImpl<ContractState>;
 
+    #[abi(embed_v0)]
+    impl OwnableImpl = OwnableComponent::OwnableImpl<ContractState>;
+
     #[storage]
-    struct Storage {
+    pub struct Storage {
         accepted_payment_token: ContractAddress,
         token_price: Map<ContractAddress, u256>,
         owner: ContractAddress,
@@ -44,7 +47,12 @@ use starknet::{ContractAddress, ClassHash, get_contract_address, get_caller_addr
         self.accepted_payment_token.write(accepted_payment_token);
     }
 
+    #[abi(embed_v0)]
     impl TokenSaleImpl of ITokenSale<ContractState> {
+        fn get_accepted_payment_token(self: @ContractState) -> ContractAddress {
+            self.accepted_payment_token.read()
+        }
+
         fn check_available_token(self: @ContractState, token_address: ContractAddress) -> u256 {
             let token = IERC20TokenDispatcher {contract_address: token_address};
             let address = get_contract_address();
